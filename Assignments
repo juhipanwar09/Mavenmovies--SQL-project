@@ -1,0 +1,101 @@
+You and your rich Uncle Jimmy just purchased Maven Movies, a brick and mortar DVD Rental business. Uncle Jimmy put up the money, and you’re in charge of the day-to-day operations. As a new owner, you’ll need to learn everything you can about your business: your product inventory, your staff, your customer purchase behaviors, etc. You have access to the entire Maven Movies SQL database, but the remaining employees are not able to give you much direction. You’ll need to analyze everything on your own.
+
+-- Assignment 1
+-- “I’m going to send an email letting our customers know there has been a management change.Could you pull a list of the first name, last name, and emailof each of our customers?”
+
+SELECT 
+    first_name, last_name, email
+FROM
+    customer;
+
+-- Assignment 2
+-- “My understanding is that we have titles that we rent for durations of 3, 5, or 7days.Could you pull the records of our films and see if there are any other rental durations?”
+
+SELECT DISTINCT
+    rental_duration
+FROM
+    film;
+
+-- Assignment 3
+--  “I’d like to look at payment records for our long-term customers to learn about their purchase patterns.Could you pull all payments from our first 100 customers (based on customer ID)?”
+
+SELECT 
+    *
+FROM
+    payment
+WHERE
+    customer_id BETWEEN 1 AND 100;
+
+-- Assignment 4
+-- “The payment data you gave me on our first 100 customers was great –thank you!Now I’d love to see just payments over $5for those same customers, since January 1, 2006.” 
+
+SELECT 
+    customer_id, rental_id, amount, payment_date
+FROM
+    payment
+WHERE
+    customer_id < 101 AND amount >= 5
+        AND payment_date >= '2006-01-01';
+
+-- Assignment 5
+-- “The data you shared previously on customers 42, 53, 60, and 75 was good to see. Now, could you please write a query to pull all payments from those specific customers,along withpayments over $5, from any customer?
+
+SELECT 
+    customer_id, rental_id, amount, payment_date
+FROM
+    payment
+WHERE
+    amount > 5 OR customer_id in(42,53,60,75);
+
+-- Assignment 6
+--  “We need to understand the special features in our films. Could you pull a list of films which include a Behind the Scenes special feature?"
+
+SELECT 
+    title, special_features
+FROM
+    film
+WHERE
+    special_features LIKE '%Behind the Scenes%';
+
+-- Assignment 7
+-- “I need to get a quick overview of how long our movies tend to be rented out for. Could you please pull a count of titles sliced by rental duration?”
+
+SELECT 
+    rental_duration,
+    COUNT(rental_duration) AS films_with_this_rental_duration
+FROM
+    film
+GROUP BY rental_duration;
+
+-- Assignment 8
+--  “I’m wondering if we charge more for a rental when the replacement cost is higher. Can you help me pull a count of films, along with the average, min, and max rental rate, grouped by replacement cost?"
+
+SELECT 
+    replacement_cost,
+    COUNT(film_id) AS number_of_films,
+    MIN(rental_rate) AS cheapest_rental_rate,
+    MAX(rental_rate) AS most_expensive_rate,
+    AVG(rental_rate) AS average_rental_rate
+FROM
+    film
+GROUP BY replacement_cost;
+
+-- Assignemt 9
+--  “I’d like to talk to customers that have not rented much from us to understand if there is something we could be doing better. Could you pull a list of customer_idswith less than 15 rentalsall-time?”
+
+SELECT 
+    customer_id, COUNT(rental_id) AS total_rent
+FROM
+    rental
+GROUP BY customer_id
+HAVING COUNT(rental_id) < 15;
+
+-- Assignment 10
+--  “I’d like to see if our longest films also tend to be our most expensive rentals. Could you pull me a list of all film titlesalong with their lengths and rental rates, and sort them from longest to shortest?
+
+SELECT 
+    title, length, rental_rate
+FROM
+    film
+ORDER BY length DESC;
+
