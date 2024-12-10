@@ -99,3 +99,35 @@ FROM
     film
 ORDER BY length DESC;
 
+-- Assignment 11
+-- “I’d like to know which store each customer goes to, and whether or not they are active. Could you pull a list of first and last names of all customers, and label them as either ‘store 1 active’, ‘store 1 inactive’, ‘store 2 active’, or ‘store 2 inactive’?”
+
+SELECT 
+    first_name,
+    last_name,
+    CASE
+        WHEN store_id = 1 AND active = 1 THEN 'store 1 active'
+        WHEN store_id = 1 AND active = 0 THEN 'store 1 inactive'
+        WHEN store_id = 2 AND active = 1 THEN 'store 2 active'
+        WHEN store_id = 2 AND active = 0 THEN 'store 2 inactive'
+        ELSE 'check the code'
+    END AS store_and_status
+FROM
+    customer;
+
+-- Assignment 12
+-- “I’m curious how many inactive customers we have at each store. Could you please create a table to count the number of customers broken down by store_id(in rows), and active status (in columns)?
+
+SELECT 
+    store_id,
+    COUNT(CASE
+        WHEN active = 1 THEN customer_id
+        ELSE NULL
+    END) AS active,
+    COUNT(CASE
+        WHEN active = 0 THEN customer_id
+        ELSE NULL
+    END) AS inactive
+FROM
+    customer
+GROUP BY store_id;
